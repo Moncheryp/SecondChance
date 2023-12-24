@@ -1,0 +1,114 @@
+def ask_yes_no_question(question):
+    """
+    Function to ask a yes/no question and return the user's response.
+
+    Parameters:
+    - question (str): The yes/no question to ask.
+
+    Returns:
+    - response (bool): True if the user answers yes, False if the user answers no.
+    """
+    while True:
+        user_response = input(f"{question} (yes/no): ").lower()
+        if user_response == 'yes':
+            return True
+        elif user_response == 'no':
+            return False
+        else:
+            print("Invalid response. Please enter 'yes' or 'no'.")
+
+def suggest_career_options():
+    """
+    Function to suggest career options for individuals based on age and legal history.
+
+    Returns:
+    - suggestions (list): A list of suggested career options.
+    """
+    suggestions = []
+
+    print("Welcome to the Second Chance program!")
+
+    # Get input from the user
+    age = int(input("Enter your age: "))
+
+    # Check age eligibility
+    if age < 18:
+        suggestions.append("This program is designed for individuals aged 18 and older.")
+        return suggestions
+
+    # Confirm legal history
+    has_felony_history = ask_yes_no_question("Do you have a felony history?")
+    has_misdemeanor_history = ask_yes_no_question("Do you have a misdemeanor history?")
+
+    # Analyze legal history
+    if has_felony_history:
+        suggestions.append("Explore industries considering applicants with felony convictions.")
+        # Specific career suggestions for individuals with felonies
+        felony_careers = {
+            "Manufacturing": "$38,000",
+            "Construction": "$38,600",
+            "Transportation": "$60,000"
+        }
+        suggestions.extend(["You qualify for the following careers with a felony and their starting salaries:"] +
+                          [f"{career}: {salary}" for career, salary in felony_careers.items()])
+
+        # Check for disqualifying felony charges
+        disqualified_felony_charges = ["Assault", "Burglary", "Murder", "Drug Possession", "Robbery", "Fraud", "Theft", "Battery"]
+        disqualified = any(charge.lower() in disqualified_felony_charges for charge in input("Enter felony charges (comma-separated, e.g., Assault, Theft): ").split(', '))
+        if disqualified:
+            disqualified_careers = ["Hospitality", "Healthcare", "Office Administration"]
+            suggestions.extend([f"Note: Felony charges like {', '.join(disqualified_felony_charges)} disqualify you from the following careers:"] + disqualified_careers)
+
+    if has_misdemeanor_history:
+        suggestions.append("Consider sectors known for being more lenient towards individuals with misdemeanor records.")
+        # Specific career suggestions for individuals with misdemeanors
+        misdemeanor_careers = {
+            "Manufacturing": "$38,000",
+            "Construction": "$38,600",
+            "Hospitality": "$38,000",
+            "Transportation": "$60,000",
+            "Healthcare": "$45,000",
+            "Office Administration": "$35,000"
+        }
+        suggestions.extend(["You qualify for the following careers with a misdemeanor and their starting salaries:"] +
+                          [f"{career}: {salary}" for career, salary in misdemeanor_careers.items()])
+
+    # Additional career suggestions based on the individual's profile can be added here
+    # You can customize this part based on research and available data
+
+    # List of organizations for employment services
+    employment_organizations = [
+        "Gang Alternative",
+        "Touching Miami with Love",
+        "Employ South Florida",
+        "Career Source Dade",
+        "Career Source Broward",
+        "Renew Broward",
+        "Renew Dade"
+    ]
+
+    # Analyze legal history
+    if has_felony_history or has_misdemeanor_history:
+        # Display organizations for employment services at the end
+        suggestions.extend(["Consider reaching out to the following organizations for employment services:"] +
+                          [f"- {org}" for org in employment_organizations])
+
+    return suggestions
+
+def main():
+    while True:
+        # Call the function
+        career_suggestions = suggest_career_options()
+
+        # Print the suggestions
+        print("\nCareer Suggestions:")
+        for suggestion in career_suggestions:
+            print("- " + suggestion)
+
+        # Ask if the user wants to continue
+        continue_response = ask_yes_no_question("Do you want to continue?")
+        if not continue_response:
+            break
+
+if __name__ == "__main__":
+    main()
